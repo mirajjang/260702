@@ -2,7 +2,14 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-import os
+import io
+
+from embedded_data import (
+    BIRTH_RECENT_CSV,
+    TFR_MILESTONES_CSV,
+    REGIONAL_TFR_CSV,
+    SIDO_AGE_CSV,
+)
 
 # ----------------------------------------------------------------------------
 # 기본 설정
@@ -13,8 +20,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
-DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 COLOR_DECLINE = "#94A3B8"   # 회색빛 파랑 — 하락기
 COLOR_REBOUND = "#F97316"   # 주황 — 반등기 강조
@@ -47,24 +52,24 @@ def base_layout(fig, title=None, height=460):
 # ----------------------------------------------------------------------------
 @st.cache_data
 def load_birth_recent():
-    return pd.read_csv(os.path.join(DATA_DIR, "birth_stats_2015_2025.csv"))
+    return pd.read_csv(io.StringIO(BIRTH_RECENT_CSV))
 
 
 @st.cache_data
 def load_tfr_milestones():
-    df = pd.read_csv(os.path.join(DATA_DIR, "tfr_milestones_1970_2025.csv"))
+    df = pd.read_csv(io.StringIO(TFR_MILESTONES_CSV))
     df["event"] = df["event"].fillna("")
     return df
 
 
 @st.cache_data
 def load_regional_tfr():
-    return pd.read_csv(os.path.join(DATA_DIR, "regional_tfr_2025_confirmed.csv"))
+    return pd.read_csv(io.StringIO(REGIONAL_TFR_CSV))
 
 
 @st.cache_data
 def load_sido_age():
-    return pd.read_csv(os.path.join(DATA_DIR, "sido_age_gender_2026_06.csv"))
+    return pd.read_csv(io.StringIO(SIDO_AGE_CSV))
 
 
 birth_recent = load_birth_recent()
